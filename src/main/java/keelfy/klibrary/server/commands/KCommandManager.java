@@ -12,22 +12,10 @@ import net.minecraft.command.*;
 public enum KCommandManager {
 	INSTANCE;
 
-//	private List<Object> commandHandlerRegistry = new ArrayList<Object>();
-
 	public void registerCommandHandler(Object handler, CommandHandler commandManager) {
-//		if (this.commandHandlerRegistry.contains(handler)) {
-//			KLibrary.logger.error("Error occurred while command handler registerating.");
-//			return;
-//		}
-
-//		commandHandlerRegistry.add(handler);
-		this.initializeCommandHandler(handler, commandManager);
-	}
-
-	private void initializeCommandHandler(Object handler, CommandHandler manager) {
 		for (final Method method : handler.getClass().getMethods()) {
 			if (method.isAnnotationPresent(KCommand.class)) {
-				manager.registerCommand(this.initializeAnnotatedMethod(handler, method));
+				commandManager.registerCommand(this.initializeAnnotatedMethod(handler, method));
 			}
 		}
 	}

@@ -4,6 +4,8 @@ import cpw.mods.fml.common.event.*;
 import keelfy.klibrary.common.KCommon;
 
 /**
+ * This is iternal class, do not use it.
+ * 
  * @author keelfy
  */
 public class KServer extends KCommon {
