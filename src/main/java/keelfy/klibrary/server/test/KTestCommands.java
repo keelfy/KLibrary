@@ -1,5 +1,6 @@
-package keelfy.klibrary.server;
+package keelfy.klibrary.server.test;
 
+import keelfy.klibrary.server.KServerUtils;
 import keelfy.klibrary.server.commands.*;
 import keelfy.klibrary.server.commands.KCommandCompletions.Completion;
 import net.minecraft.command.*;
@@ -13,11 +14,12 @@ public enum KTestCommands {
 	INSTANCE;
 
 	public static void register(MinecraftServer server) {
-		KCommandManager.INSTANCE.registerCommandHandler(INSTANCE, (CommandHandler) server.getCommandManager());
+		KCommandManager.INSTANCE.registerCommandContainer(INSTANCE, (CommandHandler) server.getCommandManager());
 	}
 
 	@KCommand(aliases = { "test", "test1" }, desc = "Test of klibrary", canUseFromConsole = false)
 	@KCommandCompletions({ @Completion(num = 0, variants = { "<player>" }), @Completion(num = 2, variants = { "gui", "gui12" }) })
+	@KChildCommands({ KTestSubCmds.class })
 	public void test(KCommandArguments args, ICommandSender sender) {
 		EntityPlayerMP player = KServerUtils.checkPlayer(sender);
 

@@ -5,8 +5,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.mojang.authlib.GameProfile;
 
 import keelfy.klibrary.KLibrary;
-import keelfy.klibrary.client.KClientPacketHandler;
-import keelfy.klibrary.common.KClientPackets;
+import keelfy.klibrary.client.*;
 import keelfy.klibrary.network.EnumDataType;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;

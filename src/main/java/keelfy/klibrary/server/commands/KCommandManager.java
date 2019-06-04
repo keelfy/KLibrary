@@ -3,8 +3,11 @@ package keelfy.klibrary.server.commands;
 import java.lang.reflect.*;
 import java.util.*;
 
+import keelfy.klibrary.KLibrary;
 import keelfy.klibrary.server.commands.KCommandCompletions.Completion;
+import keelfy.klibrary.server.commands.exceptions.*;
 import net.minecraft.command.*;
+import net.minecraft.util.*;
 
 /**
  * @author keelfy
@@ -12,7 +15,7 @@ import net.minecraft.command.*;
 public enum KCommandManager {
 	INSTANCE;
 
-	public void registerCommandHandler(Object handler, CommandHandler commandManager) {
+	public void registerCommandContainer(Object handler, CommandHandler commandManager) {
 		for (final Method method : handler.getClass().getMethods()) {
 			if (method.isAnnotationPresent(KCommand.class)) {
 				commandManager.registerCommand(this.initializeAnnotatedMethod(handler, method));
@@ -31,7 +34,9 @@ public enum KCommandManager {
 			initTabCompletions(method.getAnnotation(KCommandCompletions.class), info);
 		}
 
-		final KBaseCommand command = new KBaseCommand(info) {
+		KCommandChilds childs = getChildCommands(toInvoke, method, info);
+
+		final KBaseCommand command = new KBaseCommand(info, childs) {
 			@Override
 			public void processCommand(final ICommandSender sender, final String[] args) {
 				if ((cmd.max() != -1 && args.length > cmd.max()) || args.length < cmd.min())
@@ -59,8 +64,8 @@ public enum KCommandManager {
 							}
 						}
 					}
-
 					method.invoke(toInvoke, arguments, sender);
+					this.callChilds(getChilds(), arguments, sender, 0);
 				} catch (IllegalAccessException e) {
 					e.printStackTrace();
 				} catch (IllegalArgumentException e) {
@@ -69,10 +74,44 @@ public enum KCommandManager {
 					e.printStackTrace();
 				} catch (CommandException e) {
 					e.printStackTrace();
+				} catch (KPermissionsException e) {
+					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "You do not have enought permissions for this command."));
+				} catch (KCommandException e) {
+					sender.addChatMessage(new ChatComponentText(e.getMessage()));
 				}
 			}
 		};
 		return command;
+	}
+
+	private KCommandChilds getChildCommands(Object object, Method method, KCommandInfo infoBase) {
+		KCommandChilds childs = new KCommandChilds(infoBase, object, method);
+		if (method.isAnnotationPresent(KChildCommands.class)) {
+			Class[] classes = method.getAnnotation(KChildCommands.class).value();
+
+			for (Class clazz : classes) {
+				if (object.getClass() == clazz) {
+					KLibrary.logger.error("Remove self-directed command childs annotation in " + method.getName());
+					continue;
+				}
+
+				try {
+					Object obj = clazz.newInstance();
+					KLibrary.logger.info("Loading object " + obj.toString() + "...");
+					for (Method childMethod : clazz.getMethods()) {
+						if (childMethod.isAnnotationPresent(KCommand.class)) {
+							KCommand cmd = childMethod.getAnnotation(KCommand.class);
+							KCommandInfo info = new KCommandInfo(cmd.aliases(), cmd.usage());
+							childs.addChild(getChildCommands(obj, childMethod, info));
+							KLibrary.logger.info(childs.getObject());
+						}
+					}
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return childs;
 	}
 
 	private void initTabCompletions(KCommandCompletions commandCompletions, KCommandInfo info) {

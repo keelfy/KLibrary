@@ -1,8 +1,6 @@
 package keelfy.klibrary.common;
 
 import cpw.mods.fml.common.event.*;
-import keelfy.klibrary.KLibrary;
-import keelfy.klibrary.network.KNetwork;
 
 /**
  * This is iternal class, do not use it.
@@ -12,7 +10,7 @@ import keelfy.klibrary.network.KNetwork;
 public class KCommon {
 
 	public void preInit(final FMLPreInitializationEvent event) {
-		KLibrary.network = new KNetwork(KLibrary.MOD_ID);
+		KCommonEvents.register();
 	}
 
 	public void serverStarting(final FMLServerStartingEvent event) {}

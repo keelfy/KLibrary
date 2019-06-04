@@ -69,5 +69,7 @@ public @interface KCommand {
 	 */
 	boolean anyFlags() default false;
 
+	boolean toCall() default true;
+
 	boolean canUseFromConsole() default true;
 }

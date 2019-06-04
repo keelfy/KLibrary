@@ -1,7 +1,7 @@
 package keelfy.klibrary.client;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import keelfy.klibrary.KLibrary;
+import keelfy.klibrary.*;
 import keelfy.klibrary.common.KCommon;
 
 /**

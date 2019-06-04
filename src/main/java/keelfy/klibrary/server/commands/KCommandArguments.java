@@ -66,7 +66,7 @@ public class KCommandArguments {
 		// Eliminate empty args and combine multiword args first
 		List<Integer> argIndexList = new ArrayList<Integer>(args.length);
 		List<String> argList = new ArrayList<String>(args.length);
-		for (int i = 1; i < args.length; ++i) {
+		for (int i = 0; i < args.length; ++i) {
 			isHanging = false;
 
 			String arg = args[i];

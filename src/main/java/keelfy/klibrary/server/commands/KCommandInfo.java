@@ -19,6 +19,7 @@ public class KCommandInfo {
 	private List<String> aliases;
 	private KCommandTabCompleter tabCompleter;
 	private boolean canUseFromConsole;
+	private boolean call;
 
 	public KCommandInfo(String[] aliases, String usage) {
 		if (aliases.length == 0)
@@ -29,6 +30,7 @@ public class KCommandInfo {
 		this.usage = usage;
 		this.canUseFromConsole = true;
 		this.tabCompleter = new KCommandTabCompleter();
+		this.call = true;
 	}
 
 	public KCommandInfo(String name, String usage) {
@@ -37,6 +39,15 @@ public class KCommandInfo {
 		this.usage = usage;
 		this.canUseFromConsole = true;
 		this.tabCompleter = new KCommandTabCompleter();
+		this.call = true;
+	}
+
+	public boolean isCall() {
+		return call;
+	}
+
+	public void setCall(boolean call) {
+		this.call = call;
 	}
 
 	public KCommandInfo createTabCompleter(Object[] objects) {

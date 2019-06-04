@@ -1,4 +1,4 @@
-package keelfy.klibrary.common;
+package keelfy.klibrary.client;
 
 /**
  * This is iternal class, do not use it.

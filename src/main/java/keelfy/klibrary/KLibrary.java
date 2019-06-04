@@ -19,7 +19,6 @@ public final class KLibrary {
 	public static final String MOD_ID = "klibrary";
 	public static final String MOD_NAME = "KLibrary";
 	public static final String MOD_VERSION = "@VERSIOM@";
-
 	public static Logger logger;
 
 	public static KNetwork network;
@@ -27,6 +26,8 @@ public final class KLibrary {
 	@Mod.EventHandler
 	public void preInit(final FMLPreInitializationEvent event) {
 		logger = event.getModLog();
+		network = new KNetwork(MOD_ID);
+
 		proxy.preInit(event);
 	}
 

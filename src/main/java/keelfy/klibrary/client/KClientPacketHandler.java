@@ -5,7 +5,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.*;
-import keelfy.klibrary.common.KClientPackets;
 import keelfy.klibrary.network.KPacketReceiver.ClientPacketReceiver;
 
 /**
