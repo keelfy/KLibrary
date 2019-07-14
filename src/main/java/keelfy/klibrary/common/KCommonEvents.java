@@ -1,12 +1,23 @@
 package keelfy.klibrary.common;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import keelfy.klibrary.events.KBlockEvent.BlockIgniteEvent;
-import keelfy.klibrary.events.PlayerMoveEvent;
-import keelfy.klibrary.utils.*;
-import net.minecraft.init.Blocks;
+import cpw.mods.fml.common.eventhandler.*;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import keelfy.klibrary.common.player.KPlayerProperties;
+import keelfy.klibrary.events.block.HangingEvent;
+import keelfy.klibrary.events.entity.player.*;
+import keelfy.klibrary.utils.KBlock;
+import net.minecraft.entity.EntityHanging;
+import net.minecraft.entity.player.*;
+import net.minecraft.init.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
+import net.minecraftforge.event.entity.player.*;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 /**
  * @author keelfy
@@ -20,24 +31,73 @@ public enum KCommonEvents {
 	}
 
 	@SubscribeEvent
-	public void testIgnite(BlockIgniteEvent event) {
-		event.setCanceled(true);
+	public void entityCostructing(EntityConstructing event) {
+		if (event.entity instanceof EntityPlayer)
+			KPlayerProperties.construct((EntityPlayer) event.entity);
 	}
 
-//	@SubscribeEvent
-//	public void testBurn(BlockBurnEvent event) {
-//		event.setCanceled(true);
-//	}
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onPlayerUpdate(TickEvent.PlayerTickEvent event) {
+		if (event.player.worldObj.isRemote)
+			return;
 
-	@SubscribeEvent
-	public void playerMove(PlayerMoveEvent event) {
-		if (!event.getPlayer().capabilities.isCreativeMode) {
-			KBlock to = new KLocation(event.getPlayer()).getLocatedBlock();
-			KBlock from = event.getPrevious().getLocatedBlock();
+		EntityPlayerMP player = (EntityPlayerMP) event.player;
+		KPlayerProperties data = KPlayerProperties.get(player);
 
-			if (to.isBlockEqual(Blocks.cobblestone)) {
+		if (event.phase == Phase.START) {
+			if (player.theItemInWorldManager.getGameType() != data.getLastTickGameMode()) {
+				PlayerGameModeChangeEvent call = new PlayerGameModeChangeEvent(player, data.getLastTickGameMode(), player.theItemInWorldManager.getGameType());
+
+				if (MinecraftForge.EVENT_BUS.post(call)) {
+					player.setGameType(data.getLastTickGameMode());
+					return;
+				}
+			}
+		} else {
+			KPlayerProperties.get(player).setLastTickGameMode(player.theItemInWorldManager.getGameType());
+		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (event.world.isRemote)
+			return;
+
+		EntityPlayerMP player = (EntityPlayerMP) event.entityPlayer;
+		ItemStack stack = player.getHeldItem();
+		KBlock clicked = new KBlock(event.world, event.x, event.y, event.z);
+
+		if (event.action == Action.RIGHT_CLICK_BLOCK) {
+			if (stack != null) {
+				if ((stack.getItem() == Items.item_frame || stack.getItem() == Items.painting)) {
+					HangingEvent.Place call = new HangingEvent.Place(null, clicked, ForgeDirection.values()[event.face], player);
+					if (MinecraftForge.EVENT_BUS.post(call)) {
+						event.setCanceled(true);
+						return;
+					}
+				}
+			}
+
+			if (clicked.isBlockEqual(Blocks.bed)) {
+				PlayerBedEnterEvent call = new PlayerBedEnterEvent(player, clicked);
+				if (MinecraftForge.EVENT_BUS.post(call)) {
+					event.setCanceled(true);
+					return;
+				}
+			}
+		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onPlayerAttackEntity(AttackEntityEvent event) {
+		if (event.entityPlayer.worldObj.isRemote)
+			return;
+
+		if (event.target instanceof EntityHanging) {
+			if (MinecraftForge.EVENT_BUS.post(new HangingEvent.Break(event.target, DamageSource.causePlayerDamage(event.entityPlayer)))) {
 				event.setCanceled(true);
 			}
 		}
 	}
+
 }

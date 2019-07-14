@@ -30,6 +30,14 @@ public final class KNetwork {
 		this.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(channelName);
 	}
 
+	public FMLEventChannel getChannel() {
+		return channel;
+	}
+
+	public String getChannelName() {
+		return channelName;
+	}
+
 	/**
 	 * Registers packet handler of this channel
 	 * 
@@ -134,12 +142,25 @@ public final class KNetwork {
 	 * @param obs          dispatch objects
 	 */
 	public void sendToAllAround(boolean markTypes, Entity entity, int packetNumber, Object... obs) {
+		this.sendToAllAround(markTypes, entity, packetNumber, 60, obs);
+	}
+
+	/**
+	 * Sends packet to all entities around specific entity by number of packet
+	 * 
+	 * @param markTypes    use this if don't know dispatch objects types in advance
+	 * @param entity       central entity
+	 * @param packetNumber the unique (in the field of your mod) number of packet
+	 * @param range        range
+	 * @param obs          dispatch objects
+	 */
+	public void sendToAllAround(boolean markTypes, Entity entity, int packetNumber, int range, Object... obs) {
 		ByteBuf buffer = Unpooled.buffer();
 
 		if (!fillBuffer(buffer, markTypes, packetNumber, obs))
 			return;
 
-		TargetPoint point = new TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, 60);
+		TargetPoint point = new TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, range);
 		channel.sendToAllAround(new FMLProxyPacket(buffer, channelName), point);
 	}
 

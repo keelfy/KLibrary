@@ -15,13 +15,12 @@ public class KServer extends KCommon {
 	public void preInit(final FMLPreInitializationEvent event) {
 		super.preInit(event);
 
-		KServerEvents.register();
+		KServerEvents.INSTANCE.register();
 	}
 
 	@Override
 	public void serverStarting(final FMLServerStartingEvent event) {
 		super.serverStarting(event);
-
 		KTestCommands.register(event.getServer());
 	}
 }

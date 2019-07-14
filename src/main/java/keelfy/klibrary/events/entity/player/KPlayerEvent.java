@@ -1,16 +1,17 @@
-package keelfy.klibrary.events;
+package keelfy.klibrary.events.entity.player;
 
 import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * @author keelfy
+ * @date 7 июн. 2019 г.
  */
 public class KPlayerEvent extends Event {
 
-	private EntityPlayer player;
+	protected final EntityPlayer player;
 
-	public KPlayerEvent(EntityPlayer player) {
+	public KPlayerEvent(final EntityPlayer player) {
 		this.player = player;
 	}
 

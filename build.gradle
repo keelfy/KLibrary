@@ -29,7 +29,8 @@ compileJava {
 
 jar {
     manifest {
-        attributes 'FMLCorePlugin': '${mod_group}.asm.KHookLoader'
+        attributes 'FMLAT': 'klibrary_at.cfg'
+        attributes 'FMLCorePlugin': 'keelfy.klibrary.asm.KHookLoader'
         attributes 'FMLCorePluginContainsMod': 'true'
     }
 }

@@ -7,7 +7,6 @@ import javax.annotation.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import keelfy.klibrary.server.commands.exceptions.KCommandException;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -58,29 +57,27 @@ public class KBaseCommand extends CommandBase {
 		return commandInfo.getUsage();
 	}
 
-	public static void callChilds(KCommandChilds baseChilds, KCommandArguments arguments, ICommandSender sender, int deep) throws KCommandException {
+	public static void callChilds(KCommandChilds baseChilds, KCommandArguments arguments, ICommandSender sender, int deep) throws Throwable {
 		if (arguments.argsLength() == 0)
 			return;
 
-		if (deep > 0) {
-			String[] originalArgs = arguments.originalArgs;
-			ArrayUtils.remove(originalArgs, 0);
-			arguments = new KCommandArguments(originalArgs, arguments.getFlags());
-		}
+		KCommandArguments args = new KCommandArguments(ArrayUtils.remove(arguments.originalArgs, 0), arguments.getFlags());
 
 		for (int i = 0; i < baseChilds.getChilds().size(); i++) {
 			KCommandChilds childs = baseChilds.getChilds().get(i);
 
 			if (childs.getInfo().isCall() && childs.getInfo().getName().equals(arguments.getString(0))) {
 				try {
-					childs.getMethod().invoke(childs.getObject(), arguments, sender);
-				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					childs.getMethod().invoke(childs.getObject(), args, sender);
+				} catch (IllegalAccessException | IllegalArgumentException e) {
 					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					throw e.getCause();
 				}
 			}
 
 			if (arguments.argsLength() != 0)
-				callChilds(childs, arguments, sender, deep + 1);
+				callChilds(childs, args, sender, deep + 1);
 		}
 	}
 

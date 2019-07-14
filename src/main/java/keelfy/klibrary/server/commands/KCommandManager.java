@@ -19,6 +19,7 @@ public enum KCommandManager {
 		for (final Method method : handler.getClass().getMethods()) {
 			if (method.isAnnotationPresent(KCommand.class)) {
 				commandManager.registerCommand(this.initializeAnnotatedMethod(handler, method));
+				KLibrary.logger.info(handler.getClass().getCanonicalName() + " registered.");
 			}
 		}
 	}
@@ -78,6 +79,8 @@ public enum KCommandManager {
 					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "You do not have enought permissions for this command."));
 				} catch (KCommandException e) {
 					sender.addChatMessage(new ChatComponentText(e.getMessage()));
+				} catch (Throwable e) {
+					e.printStackTrace();
 				}
 			}
 		};
@@ -97,7 +100,7 @@ public enum KCommandManager {
 
 				try {
 					Object obj = clazz.newInstance();
-					KLibrary.logger.info("Loading object " + obj.toString() + "...");
+					KLibrary.logger.info("Found child command handler: " + clazz.getCanonicalName());
 					for (Method childMethod : clazz.getMethods()) {
 						if (childMethod.isAnnotationPresent(KCommand.class)) {
 							KCommand cmd = childMethod.getAnnotation(KCommand.class);

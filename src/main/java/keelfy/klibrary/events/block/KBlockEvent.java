@@ -1,4 +1,4 @@
-package keelfy.klibrary.events;
+package keelfy.klibrary.events.block;
 
 import cpw.mods.fml.common.eventhandler.*;
 import keelfy.klibrary.utils.KBlock;
@@ -10,20 +10,12 @@ public class KBlockEvent extends Event {
 
 	private KBlock locatedBlock;
 
-	public KBlockEvent(KBlock data) {
-		this.locatedBlock = data;
+	public KBlockEvent(KBlock block) {
+		this.locatedBlock = block;
 	}
 
 	public KBlock getLocatedBlock() {
 		return locatedBlock;
-	}
-
-	@Cancelable
-	public static class BlockIgniteEvent extends KBlockEvent {
-
-		public BlockIgniteEvent(KBlock data) {
-			super(data);
-		}
 	}
 
 	@Cancelable
