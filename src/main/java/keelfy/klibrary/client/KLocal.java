@@ -1,5 +1,7 @@
 package keelfy.klibrary.client;
 
+import java.util.*;
+
 import cpw.mods.fml.relauncher.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,6 +36,9 @@ public final class KLocal {
 	 * @param objects          variables used in message
 	 */
 	public static void sendLocalizedMessage(EntityPlayer player, String localizationCode, Object... objects) {
-		player.addChatMessage(new ChatComponentText(format(localizationCode, objects)));
+		Iterator<String> text = Arrays.asList(format(localizationCode, objects).split("@nl@")).iterator();
+		while (text.hasNext()) {
+			player.addChatMessage(new ChatComponentText(text.next()));
+		}
 	}
 }

@@ -1,8 +1,11 @@
 package keelfy.klibrary.utils;
 
+import java.awt.geom.AffineTransform;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.MathHelper;
 
 /**
  * An immutable 3-dimensional vector.
@@ -108,7 +111,7 @@ public class KVector implements Comparable<KVector> {
 	 * @return the x coordinate
 	 */
 	public int getBlockX() {
-		return (int) Math.round(x);
+		return MathHelper.floor_double(x);
 	}
 
 	/**
@@ -146,7 +149,7 @@ public class KVector implements Comparable<KVector> {
 	 * @return the y coordinate
 	 */
 	public int getBlockY() {
-		return (int) Math.round(y);
+		return MathHelper.floor_double(y);
 	}
 
 	/**
@@ -184,7 +187,7 @@ public class KVector implements Comparable<KVector> {
 	 * @return the z coordinate
 	 */
 	public int getBlockZ() {
-		return (int) Math.round(z);
+		return MathHelper.floor_double(z);
 	}
 
 	/**

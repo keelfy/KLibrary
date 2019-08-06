@@ -31,10 +31,9 @@ jar {
     manifest {
         attributes 'FMLAT': 'klibrary_at.cfg'
         attributes 'FMLCorePlugin': 'keelfy.klibrary.asm.KHookLoader'
-        attributes 'FMLCorePluginContainsMod': 'true'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 }
-
 
 minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
