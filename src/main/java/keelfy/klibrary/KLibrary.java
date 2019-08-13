@@ -23,6 +23,8 @@ public final class KLibrary {
 
 	public static KNetwork network;
 
+	public static final boolean DEBUG = false;
+
 	@Mod.EventHandler
 	public void preInit(final FMLPreInitializationEvent event) {
 		logger = event.getModLog();
