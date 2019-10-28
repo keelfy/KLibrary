@@ -1,7 +1,7 @@
 package keelfy.klibrary.client;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import keelfy.klibrary.*;
+import keelfy.klibrary.KLibrary;
 import keelfy.klibrary.common.KCommon;
 
 /**
@@ -15,6 +15,6 @@ public class KClient extends KCommon {
 	public void preInit(final FMLPreInitializationEvent event) {
 		super.preInit(event);
 
-		KLibrary.network.registerPacketHandler(KClientPacketHandler.INSTANCE);
+		KLibrary.getNetwork().registerPacketHandler(KClientPacketHandler.INSTANCE);
 	}
 }

@@ -25,4 +25,13 @@ public class KBlockEvent extends Event {
 			super(data);
 		}
 	}
+
+	@HasResult
+	public static class PushTest extends KBlockEvent {
+
+		public PushTest(KBlock block) {
+			super(block);
+		}
+
+	}
 }

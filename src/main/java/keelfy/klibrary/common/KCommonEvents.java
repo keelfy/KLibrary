@@ -6,8 +6,9 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import keelfy.klibrary.common.player.KPlayerProperties;
 import keelfy.klibrary.events.block.HangingEvent;
+import keelfy.klibrary.events.entity.EntityMoveEvent;
 import keelfy.klibrary.events.entity.player.*;
-import keelfy.klibrary.utils.KBlock;
+import keelfy.klibrary.utils.*;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.player.*;
 import net.minecraft.init.*;
@@ -43,6 +44,16 @@ public enum KCommonEvents {
 
 		EntityPlayerMP player = (EntityPlayerMP) event.player;
 		KPlayerProperties data = KPlayerProperties.get(player);
+
+		if (player.posX != player.prevPosX || player.posY != player.prevPosY || player.posZ != player.prevPosZ || player.rotationYaw != player.prevRotationYaw || player.rotationPitch != player.prevRotationPitch) {
+			KLocation from = new KLocation(player.worldObj, player.prevPosX, player.prevPosY, player.prevPosZ, player.prevRotationYaw, player.prevRotationPitch);
+			KLocation to = new KLocation(player);
+			EntityMoveEvent entityMoveEvent = new EntityMoveEvent(player, from, to);
+
+			if (MinecraftForge.EVENT_BUS.post(entityMoveEvent)) {
+				player.playerNetServerHandler.setPlayerLocation(to.getPosition().getX(), to.getPosition().getY(), to.getPosition().getZ(), to.getYaw(), to.getPitch());
+			}
+		}
 
 		if (event.phase == Phase.START) {
 			if (player.theItemInWorldManager.getGameType() != data.getLastTickGameMode()) {

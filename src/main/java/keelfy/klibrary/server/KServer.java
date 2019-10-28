@@ -14,7 +14,7 @@ public class KServer extends KCommon {
 	public void preInit(final FMLPreInitializationEvent event) {
 		super.preInit(event);
 
-		KServerEvents.INSTANCE.register();
+//		KServerEvents.INSTANCE.register();
 	}
 
 	@Override

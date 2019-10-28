@@ -1,15 +1,13 @@
 package keelfy.klibrary.asm;
 
-import java.util.Random;
-
-import com.google.common.collect.Lists;
+import java.util.*;
 
 import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.Event.Result;
 import gloomyfolken.hooklib.asm.*;
 import keelfy.klibrary.events.block.*;
 import keelfy.klibrary.events.block.KBlockEvent.BlockBurnEvent;
 import keelfy.klibrary.events.block.PistonEvent.*;
-import keelfy.klibrary.events.entity.EntityMoveEvent;
 import keelfy.klibrary.events.entity.player.*;
 import keelfy.klibrary.server.KServerUtils;
 import keelfy.klibrary.utils.*;
@@ -30,38 +28,38 @@ import net.minecraftforge.event.entity.player.FillBucketEvent;
  */
 public final class KHooks {
 
-	@Hook(returnCondition = ReturnCondition.ON_TRUE)
-	public static boolean moveEntity(Entity entity, double x, double y, double z) {
-		EntityMoveEvent call = new EntityMoveEvent(entity, new KVector(x, y, z));
-		return MinecraftForge.EVENT_BUS.post(call);
-	}
-
-	@Hook
-	public static void moveFlying(Entity entity, float x, float y, float z) {
-		EntityMoveEvent call = new EntityMoveEvent(entity, new KVector(x, y, z));
-		if (MinecraftForge.EVENT_BUS.post(call))
-			return;
-
-		if (!call.getTo().equals(call.getFrom())) {
-			float f3 = x * x + y * y;
-
-			if (f3 >= 1.0E-4F) {
-				f3 = MathHelper.sqrt_float(f3);
-
-				if (f3 < 1.0F) {
-					f3 = 1.0F;
-				}
-
-				f3 = z / f3;
-				x *= f3;
-				y *= f3;
-				float f4 = MathHelper.sin(entity.rotationYaw * (float) Math.PI / 180.0F);
-				float f5 = MathHelper.cos(entity.rotationYaw * (float) Math.PI / 180.0F);
-				entity.motionX += x * f5 - y * f4;
-				entity.motionZ += y * f5 + x * f4;
-			}
-		}
-	}
+//	@Hook(returnCondition = ReturnCondition.ON_TRUE)
+//	public static boolean moveEntity(Entity entity, double x, double y, double z) {
+//		EntityMoveEvent call = new EntityMoveEvent(entity, new KVector(x, y, z));
+//		return MinecraftForge.EVENT_BUS.post(call);
+//	}
+//
+//	@Hook
+//	public static void moveFlying(Entity entity, float x, float y, float z) {
+//		EntityMoveEvent call = new EntityMoveEvent(entity, new KVector(x, y, z));
+//		if (MinecraftForge.EVENT_BUS.post(call))
+//			return;
+//
+//		if (!call.getTo().equals(call.getFrom())) {
+//			float f3 = x * x + y * y;
+//
+//			if (f3 >= 1.0E-4F) {
+//				f3 = MathHelper.sqrt_float(f3);
+//
+//				if (f3 < 1.0F) {
+//					f3 = 1.0F;
+//				}
+//
+//				f3 = z / f3;
+//				x *= f3;
+//				y *= f3;
+//				float f4 = MathHelper.sin(entity.rotationYaw * (float) Math.PI / 180.0F);
+//				float f5 = MathHelper.cos(entity.rotationYaw * (float) Math.PI / 180.0F);
+//				entity.motionX += x * f5 - y * f4;
+//				entity.motionZ += y * f5 + x * f4;
+//			}
+//		}
+//	}
 
 	/** {@link LiquidFlowEvent} */
 	@Hook(returnCondition = ReturnCondition.ON_TRUE)
@@ -97,27 +95,64 @@ public final class KHooks {
 
 		if (orientation != 7) {
 			boolean isPowered = piston.isIndirectlyPowered(world, x, y, z, orientation);
-			KBlock block = new KBlock(new KLocation(world, x, y, z), piston, meta);
-			ForgeDirection direction = ForgeDirection.values()[orientation];
+			ForgeDirection direction = ForgeDirection.getOrientation(orientation);
+			KBlock pistonBlock = new KBlock(new KLocation(world, x, y, z), piston, meta);
+			KBlock interactedBlock = new KBlock(new KLocation(world, x + direction.offsetX, y + direction.offsetY, z + direction.offsetZ));
 
 			if (isPowered && !piston.isExtended(meta)) {
-				PistonEvent call = new PistonEvent.Extend(block, direction, piston.isSticky, Lists.newArrayList());
-				if (MinecraftForge.EVENT_BUS.post(call)) {
+				PistonEvent call = new PistonEvent.Extend(pistonBlock, direction, piston.isSticky, Arrays.asList(interactedBlock));
+				if (MinecraftForge.EVENT_BUS.post(call))
 					return;
-				}
 
 				if (piston.canExtend(world, x, y, z, orientation)) {
 					world.addBlockEvent(x, y, z, piston, 0, orientation);
 				}
 			} else if (!isPowered && piston.isExtended(meta)) {
-				PistonEvent call = new PistonEvent.Retract(block, direction, piston.isSticky, block.getRelative(direction, 1));
-				if (MinecraftForge.EVENT_BUS.post(call)) {
+				PistonEvent call = new PistonEvent.Retract(pistonBlock, direction, piston.isSticky, interactedBlock.getRelative(direction, 1));
+				if (MinecraftForge.EVENT_BUS.post(call))
 					return;
-				}
 
 				world.setBlockMetadataWithNotify(x, y, z, orientation, 2);
 				world.addBlockEvent(x, y, z, piston, 1, orientation);
 			}
+		}
+	}
+
+	@Hook(returnCondition = ReturnCondition.ALWAYS)
+	public static boolean canPushBlock(BlockPistonBase piston, Block block, World world, int x, int y, int z, boolean flag) {
+		if (block == Blocks.obsidian) {
+			return false;
+		} else {
+			if (block != Blocks.piston && block != Blocks.sticky_piston) {
+				if (block.getBlockHardness(world, x, y, z) == -1.0F) {
+					return false;
+				}
+
+				if (block.getMobilityFlag() == 2) {
+					return false;
+				}
+
+				if (block.getMobilityFlag() == 1) {
+					if (!flag) {
+						return false;
+					}
+
+					KBlock interactedBlock = new KBlock(new KLocation(world, x, y, z), block);
+					KBlockEvent.PushTest call = new KBlockEvent.PushTest(interactedBlock);
+					MinecraftForge.EVENT_BUS.post(call);
+					return call.getResult() != Result.DENY;
+				}
+			} else if (piston.isExtended(world.getBlockMetadata(x, y, z))) {
+				return false;
+			}
+
+			if (!(world.getBlock(x, y, z).hasTileEntity(world.getBlockMetadata(x, y, z)))) {
+				KBlock interactedBlock = new KBlock(new KLocation(world, x, y, z), block);
+				KBlockEvent.PushTest call = new KBlockEvent.PushTest(interactedBlock);
+				MinecraftForge.EVENT_BUS.post(call);
+				return call.getResult() != Result.DENY;
+			}
+			return false;
 		}
 	}
 

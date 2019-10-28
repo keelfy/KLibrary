@@ -310,6 +310,15 @@ public final class KNetwork {
 						case LONG:
 							buffer.writeLong((Long) object);
 							break;
+						case SHORT:
+							buffer.writeShort((Short) object);
+							break;
+						case BYTE:
+							buffer.writeByte((Byte) object);
+							break;
+						case CHAR:
+							buffer.writeChar((Character) object);
+							break;
 						case STRING:
 							ByteBufUtils.writeUTF8String(buffer, (String) object);
 							break;

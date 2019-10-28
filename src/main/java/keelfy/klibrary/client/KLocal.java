@@ -38,7 +38,9 @@ public final class KLocal {
 	public static void sendLocalizedMessage(EntityPlayer player, String localizationCode, Object... objects) {
 		Iterator<String> text = Arrays.asList(format(localizationCode, objects).split("@nl@")).iterator();
 		while (text.hasNext()) {
-			player.addChatMessage(new ChatComponentText(text.next()));
+			String line = text.next();
+			
+			player.addChatMessage(new ChatComponentText(line));
 		}
 	}
 }

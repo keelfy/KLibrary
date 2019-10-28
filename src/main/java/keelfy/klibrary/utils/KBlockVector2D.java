@@ -6,6 +6,7 @@ package keelfy.klibrary.utils;
  * @author sk89q
  */
 public class KBlockVector2D extends KVector2D {
+
 	/**
 	 * Construct the Vector object.
 	 *

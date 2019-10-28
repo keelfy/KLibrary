@@ -1,7 +1,7 @@
 package keelfy.klibrary.events.entity;
 
 import cpw.mods.fml.common.eventhandler.Cancelable;
-import keelfy.klibrary.utils.KVector;
+import keelfy.klibrary.utils.KLocation;
 import net.minecraft.entity.Entity;
 
 /**
@@ -10,25 +10,25 @@ import net.minecraft.entity.Entity;
 @Cancelable
 public class EntityMoveEvent extends KEntityEvent {
 
-	private KVector from;
-	private KVector to;
+	private KLocation from;
+	private KLocation to;
 
-	public EntityMoveEvent(Entity entity, KVector to) {
+	public EntityMoveEvent(Entity entity, KLocation from, KLocation to) {
 		super(entity);
 
-		this.from = new KVector(entity);
+		this.from = from;
 		this.to = to;
 	}
 
-	public KVector getTo() {
+	public KLocation getTo() {
 		return to;
 	}
 
-	public void setTo(KVector value) {
-		this.to = value;
+	public void setTo(KLocation to) {
+		this.to = to;
 	}
 
-	public KVector getFrom() {
+	public KLocation getFrom() {
 		return from;
 	}
 }

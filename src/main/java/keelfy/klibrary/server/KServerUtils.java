@@ -2,8 +2,6 @@ package keelfy.klibrary.server;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.mojang.authlib.GameProfile;
-
 import keelfy.klibrary.KLibrary;
 import keelfy.klibrary.client.*;
 import keelfy.klibrary.network.EnumDataType;
@@ -45,7 +43,7 @@ public final class KServerUtils {
 	 *                         to find out supported data types
 	 */
 	public static void sendLocalizedMessage(EntityPlayerMP player, String localizationCode, Object... args) {
-		KLibrary.network.sendTo(true, player, KClientPackets.MESSAGE, ArrayUtils.add(args, 0, localizationCode));
+		KLibrary.getNetwork().sendTo(true, player, KClientPackets.MESSAGE, ArrayUtils.add(args, 0, localizationCode));
 	}
 
 	/**
@@ -68,16 +66,6 @@ public final class KServerUtils {
 	public static EntityPlayerMP matchPlayer(ICommandSender sender, String username) {
 		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, username);
 		return player == null ? MinecraftServer.getServer().getConfigurationManager().func_152612_a(username) : player;
-	}
-
-	/**
-	 * Gets profile instanceof of offline or online player by username.
-	 * 
-	 * @param username username of player
-	 * @return {@link GameProfile} of player or null if it does not found
-	 */
-	public static GameProfile getOfflinePlayer(String username) {
-		return MinecraftServer.getServer().func_152358_ax().func_152655_a(username);
 	}
 
 	public static MovingObjectPosition getMovingObjectPositionFromPlayer(World world, EntityPlayer player, boolean checkLiquids) {

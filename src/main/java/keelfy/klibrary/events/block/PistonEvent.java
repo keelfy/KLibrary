@@ -2,7 +2,7 @@ package keelfy.klibrary.events.block;
 
 import java.util.List;
 
-import cpw.mods.fml.common.eventhandler.Cancelable;
+import cpw.mods.fml.common.eventhandler.*;
 import keelfy.klibrary.utils.KBlock;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -10,14 +10,14 @@ import net.minecraftforge.common.util.ForgeDirection;
  * @author keelfy
  * @date 5 июн. 2019 г.
  */
-public class PistonEvent extends KBlockEvent {
+public class PistonEvent extends Event {
 
 	protected boolean sticky;
+	protected KBlock pistonBlock;
 	protected ForgeDirection direction;
 
-	public PistonEvent(KBlock data, ForgeDirection direction, boolean sticky) {
-		super(data);
-
+	public PistonEvent(KBlock pistonBlock, ForgeDirection direction, boolean sticky) {
+		this.pistonBlock = pistonBlock;
 		this.direction = direction;
 		this.sticky = sticky;
 	}
@@ -30,13 +30,17 @@ public class PistonEvent extends KBlockEvent {
 		return sticky;
 	}
 
+	public KBlock getPiston() {
+		return pistonBlock;
+	}
+
 	@Cancelable
 	public static class Extend extends PistonEvent {
 
 		protected List<KBlock> pushedBlocks;
 
-		public Extend(KBlock data, ForgeDirection direction, boolean sticky, List<KBlock> blocks) {
-			super(data, direction, sticky);
+		public Extend(KBlock pistonBlock, ForgeDirection direction, boolean sticky, List<KBlock> blocks) {
+			super(pistonBlock, direction, sticky);
 
 			this.pushedBlocks = blocks;
 		}
@@ -51,14 +55,18 @@ public class PistonEvent extends KBlockEvent {
 
 		protected KBlock retractBlock;
 
-		public Retract(KBlock data, ForgeDirection direction, boolean sticky, KBlock retractLocation) {
-			super(data, direction, sticky);
+		public Retract(KBlock pistonBlock, ForgeDirection direction, boolean sticky, KBlock retractLocation) {
+			super(pistonBlock, direction, sticky);
 
 			this.retractBlock = retractLocation;
 		}
 
+		/**
+		 * Only for sticky pistons
+		 */
 		public KBlock getRetractBlock() {
 			return retractBlock;
 		}
 	}
+
 }

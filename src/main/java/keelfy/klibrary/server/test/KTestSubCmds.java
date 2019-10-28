@@ -11,7 +11,7 @@ import net.minecraft.util.ChatComponentText;
  */
 public class KTestSubCmds {
 
-	@KCommand(aliases = { "lol" }, desc = "Test of klibrary", canUseFromConsole = false)
+	@KCommand(aliases = { "lol" }, desc = "Test of klibrary", canUseFromConsole = true)
 	@KChildCommands({ KTestSubSubCmds.class })
 	public void test(KCommandArguments args, ICommandSender sender) {
 		EntityPlayerMP player = KServerUtils.checkPlayer(sender);

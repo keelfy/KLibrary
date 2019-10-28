@@ -1,11 +1,12 @@
 package keelfy.klibrary;
 
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.*;
-import keelfy.klibrary.common.KCommon;
+import keelfy.klibrary.common.*;
 import keelfy.klibrary.network.KNetwork;
+import keelfy.klibrary.server.commands.KCommandManager;
 
 /**
  * @author keelfy
@@ -19,22 +20,48 @@ public final class KLibrary {
 	public static final String MOD_ID = "klibrary";
 	public static final String MOD_NAME = "KLibrary";
 	public static final String MOD_VERSION = "@VERSIOM@";
-	public static Logger logger;
 
-	public static KNetwork network;
+	private static Logger logger;
+	private static KNetwork network;
+	private static KCommandManager commandManager;
+	private static KConfig config;
 
-	public static final boolean DEBUG = false;
+	static {
+		logger = LogManager.getLogger(MOD_NAME);
+		commandManager = new KCommandManager();
+		config = new KConfig();
+	}
 
 	@Mod.EventHandler
 	public void preInit(final FMLPreInitializationEvent event) {
-		logger = event.getModLog();
 		network = new KNetwork(MOD_ID);
 
 		proxy.preInit(event);
 	}
 
 	@Mod.EventHandler
+	public void init(final FMLInitializationEvent event) {
+		proxy.init(event);
+	}
+
+	@Mod.EventHandler
 	public void serverStarting(final FMLServerStartingEvent event) {
 		proxy.serverStarting(event);
+	}
+
+	public static Logger getLogger() {
+		return logger;
+	}
+
+	public static KNetwork getNetwork() {
+		return network;
+	}
+
+	public static KConfig getConfig() {
+		return config;
+	}
+
+	public static KCommandManager getCommandManager() {
+		return commandManager;
 	}
 }

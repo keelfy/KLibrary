@@ -13,10 +13,13 @@ import net.minecraft.nbt.NBTTagCompound;
 public enum EnumDataType {
 
 	INTEGER(Integer.class),
-	STRING(String.class),
 	DOUBLE(Double.class),
 	FLOAT(Float.class),
 	LONG(Long.class),
+	SHORT(Short.class),
+	BYTE(Byte.class),
+	STRING(String.class),
+	CHAR(Character.class),
 	TAG(NBTTagCompound.class),
 	BOOLEAN(Boolean.class),
 	ITEMSTACK(ItemStack.class);

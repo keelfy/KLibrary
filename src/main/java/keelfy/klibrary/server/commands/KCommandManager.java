@@ -7,18 +7,20 @@ import keelfy.klibrary.KLibrary;
 import keelfy.klibrary.server.commands.KCommandCompletions.Completion;
 import keelfy.klibrary.server.commands.exceptions.*;
 import net.minecraft.command.*;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 
 /**
  * @author keelfy
  */
-public enum KCommandManager {
-	INSTANCE;
+public class KCommandManager {
 
-	public void registerCommandContainer(Object handler, CommandHandler commandManager) {
-		for (final Method method : handler.getClass().getMethods()) {
+	public void registerContainer(Object commandContainer) {
+		CommandHandler commandManager = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+
+		for (final Method method : commandContainer.getClass().getMethods()) {
 			if (method.isAnnotationPresent(KCommand.class)) {
-				commandManager.registerCommand(this.initializeAnnotatedMethod(handler, method));
+				commandManager.registerCommand(this.initializeAnnotatedMethod(commandContainer, method));
 			}
 		}
 	}
@@ -75,7 +77,7 @@ public enum KCommandManager {
 				} catch (CommandException e) {
 					e.printStackTrace();
 				} catch (KPermissionsException e) {
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "You do not have enought permissions for this command."));
+					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_RED + "You do not have enought permissions"));
 				} catch (KCommandException e) {
 					sender.addChatMessage(new ChatComponentText(e.getMessage()));
 				} catch (Throwable e) {
@@ -93,7 +95,7 @@ public enum KCommandManager {
 
 			for (Class clazz : classes) {
 				if (object.getClass() == clazz) {
-					KLibrary.logger.error("Remove self-directed command childs annotation in " + method.getName());
+					KLibrary.getLogger().error("Remove self-directed command childs annotation in " + method.getName());
 					continue;
 				}
 
@@ -104,7 +106,6 @@ public enum KCommandManager {
 							KCommand cmd = childMethod.getAnnotation(KCommand.class);
 							KCommandInfo info = new KCommandInfo(cmd.aliases(), cmd.usage());
 							childs.addChild(getChildCommands(obj, childMethod, info));
-							KLibrary.logger.info(childs.getObject());
 						}
 					}
 				} catch (InstantiationException | IllegalAccessException e) {

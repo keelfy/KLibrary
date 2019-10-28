@@ -15,11 +15,17 @@ public class KBlock {
 	protected KLocation location;
 	protected Block block;
 	protected int meta;
+	protected ForgeDirection face;
+
+	protected final String blockName;
+	protected final int hashCode;
 
 	public KBlock(KLocation location, Block block, int meta) {
 		this.location = location;
 		this.block = block;
 		this.meta = meta;
+		this.face = ForgeDirection.UNKNOWN;
+		this.hashCode = (this.blockName = Block.blockRegistry.getNameForObject(block) + "@" + meta).hashCode();
 	}
 
 	public KBlock(KLocation location, Block block) {
@@ -58,6 +64,14 @@ public class KBlock {
 		return isBlockEqual(Blocks.air);
 	}
 
+	public void setFace(ForgeDirection direction) {
+		this.face = direction;
+	}
+
+	public ForgeDirection getFace() {
+		return face;
+	}
+
 	public TileEntity getTileEntity() {
 		return this.getLocation().getWorld().getTileEntity(getX(), getY(), getZ());
 	}
@@ -66,31 +80,8 @@ public class KBlock {
 		this.getWorld().setBlock(this.getX(), this.getY(), this.getZ(), block);
 	}
 
-	public KBlock getRelative(ForgeDirection face, int distance) {
-		if (distance == 0 || face == ForgeDirection.UNKNOWN)
-			return this;
-
-		int x = location.getPosition().getBlockX();
-		int y = location.getPosition().getBlockY();
-		int z = location.getPosition().getBlockZ();
-
-		switch (face) {
-		case WEST:
-		case EAST:
-			x = x + face.offsetX + (int) Math.copySign(distance, face.offsetX);
-			break;
-		case UP:
-		case DOWN:
-			y = y + face.offsetY + (int) Math.copySign(distance, face.offsetY);
-			break;
-		case NORTH:
-		case SOUTH:
-			z = z + face.offsetZ + (int) Math.copySign(distance, face.offsetZ);
-			break;
-		case UNKNOWN:
-			break;
-		}
-		return new KBlock(new KLocation(location.world, x, y, z));
+	public KBlock getRelative(ForgeDirection direction, int distance) {
+		return new KBlock(new KLocation(location.getWorld(), getX() + direction.offsetX * distance, getY() + direction.offsetY * distance, getZ() + direction.offsetZ * distance));
 	}
 
 	public KBlock getRelative(ForgeDirection direction) {
@@ -123,5 +114,36 @@ public class KBlock {
 
 	public int getMeta() {
 		return meta;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return this.hashCode;
+	}
+
+	@Override
+	@SuppressWarnings("unlikely-arg-type")
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+
+		if (obj instanceof Block) {
+			return Block.isEqualTo(block, (Block) obj);
+		} else if (obj instanceof KLocation) {
+			KLocation loc = (KLocation) obj;
+
+			return this.location.getPosition().equals(loc.getPosition()) && this.location.getWorld().getWorldInfo().getWorldName().equals(loc.getWorld().getWorldInfo().getWorldName())
+					&& this.location.getWorld().provider.dimensionId == loc.getWorld().provider.dimensionId;
+		} else if (obj instanceof KBlock) {
+			KBlock kBlock = (KBlock) obj;
+
+			return this.equals(kBlock.block) && this.equals(kBlock.location) && this.meta == kBlock.meta;
+		}
+		return false;
 	}
 }
