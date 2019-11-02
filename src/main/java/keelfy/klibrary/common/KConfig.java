@@ -11,7 +11,7 @@ public class KConfig {
 
 	private Configuration config;
 
-	public static boolean debug;
+	public static boolean debug = false;
 
 	public void load(File suggesstedFile) {
 		this.config = new Configuration(suggesstedFile);
@@ -20,9 +20,7 @@ public class KConfig {
 
 	public void reload() {
 		this.config.load();
-
-		debug = this.config.getBoolean("debug_mode", config.CATEGORY_GENERAL, false, "Enables debug logging");
-
+		debug = this.config.getBoolean("debug", config.CATEGORY_GENERAL, false, "Enables debug logging");
 		this.config.save();
 	}
 }

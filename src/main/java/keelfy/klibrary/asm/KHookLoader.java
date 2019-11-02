@@ -14,6 +14,8 @@ public final class KHookLoader extends HookLoader {
 
 	@Override
 	public void registerHooks() {
-		registerHookContainer("keelfy.klibrary.asm.KHooks");
+		registerHookContainer(KCommonHooks.class.getName());
+		registerHookContainer(KClientHooks.class.getName());
+		registerHookContainer(KServerHooks.class.getName());
 	}
 }

@@ -5,16 +5,19 @@ import org.apache.commons.lang3.ArrayUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.*;
+import keelfy.klibrary.KLibrary;
 import keelfy.klibrary.network.KPacketReceiver.ClientPacketReceiver;
 
 /**
- * This is iternal class, do not use it.
- * 
  * @author keelfy
  */
 @SideOnly(Side.CLIENT)
 public enum KClientPacketHandler {
 	INSTANCE;
+
+	public static void register() {
+		KLibrary.getNetwork().registerPacketHandler(INSTANCE);
+	}
 
 	@SubscribeEvent
 	public void onClientPacket(final FMLNetworkEvent.ClientCustomPacketEvent event) {

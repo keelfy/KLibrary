@@ -21,6 +21,7 @@ version = "${mod_version}"
 group= "${mod_group}"
 archivesBaseName = "${mod_name}"
 compileJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
 
 sourceCompatibility = targetCompatibility = "1.8"
 compileJava {
@@ -42,6 +43,13 @@ minecraft {
     replaceIn "keelfy/klibrary/KLibrary.java"
 	replace "@VERSION@", project.version
 }
+
+task devJar(type: Jar, overwrite: true) {
+    from sourceSets.main.output
+    classifier = 'dev'
+}
+
+tasks.build.dependsOn devJar
 
 processResources
 {

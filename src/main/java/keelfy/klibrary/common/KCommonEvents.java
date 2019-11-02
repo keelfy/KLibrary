@@ -4,9 +4,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.*;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.relauncher.*;
 import keelfy.klibrary.common.player.KPlayerProperties;
 import keelfy.klibrary.events.block.HangingEvent;
-import keelfy.klibrary.events.entity.EntityMoveEvent;
+import keelfy.klibrary.events.client.render.RenderShadowAndFireEvent;
+import keelfy.klibrary.events.entity.*;
 import keelfy.klibrary.events.entity.player.*;
 import keelfy.klibrary.utils.*;
 import net.minecraft.entity.EntityHanging;
@@ -35,6 +37,21 @@ public enum KCommonEvents {
 	public void entityCostructing(EntityConstructing event) {
 		if (event.entity instanceof EntityPlayer)
 			KPlayerProperties.construct((EntityPlayer) event.entity);
+	}
+
+	@SubscribeEvent
+	public void onEntityInteractBlock(EntityInteractBlockEvent event) {
+		if (event.getEntity() instanceof EntityPlayer) {
+			event.setCanceled(true);
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void onRenderShadowAndFire(RenderShadowAndFireEvent.Pre event) {
+		if (event.getEntity() instanceof EntityPlayer) {
+			event.setCanceled(true);
+		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
