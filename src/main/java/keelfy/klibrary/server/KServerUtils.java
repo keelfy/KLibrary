@@ -1,15 +1,24 @@
 package keelfy.klibrary.server;
 
+import java.io.*;
+
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.ArrayUtils;
+
+import com.mojang.authlib.GameProfile;
 
 import keelfy.klibrary.KLibrary;
 import keelfy.klibrary.client.*;
 import keelfy.klibrary.network.EnumDataType;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.*;
+import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.SaveHandler;
+import net.minecraftforge.common.DimensionManager;
 
 /**
  * Diffirent server utilities.
@@ -21,9 +30,12 @@ public final class KServerUtils {
 	/**
 	 * Checks {@link ICommandSender} is instance of {@link EntityPlayerMP}.
 	 * 
-	 * @param sender sender to check
+	 * @param sender Sender to check.
+	 * @deprecated Will be removed because of useless.
 	 * @return player instance or null if it is not a player
 	 */
+	@Deprecated
+	@Nullable
 	public static EntityPlayerMP checkPlayer(ICommandSender sender) {
 		if (sender instanceof EntityPlayerMP) {
 			return (EntityPlayerMP) sender;
@@ -32,25 +44,25 @@ public final class KServerUtils {
 	}
 
 	/**
-	 * Sends packet to player with message that will be send from client in
-	 * localized form.
+	 * Sends packet to player with message that will be added to chat on client in
+	 * localized and formatted form.
 	 * 
-	 * @see {@link KClientPacketHandler} to find out receiving proccess
+	 * @see {@link KClientPacketHandler} to find out receiving proccess.
 	 * 
-	 * @param player           recipient
-	 * @param localizationCode code that I18n will use to get message
-	 * @param args             variables used in message. See {@link EnumDataType}
-	 *                         to find out supported data types
+	 * @param player           Recipient
+	 * @param localizationCode Code that I18n will use to get message
+	 * @param args             Variables used in message. See {@link EnumDataType}
+	 *                         to find out supported data types.
 	 */
 	public static void sendLocalizedMessage(EntityPlayerMP player, String localizationCode, Object... args) {
 		KLibrary.getNetwork().sendTo(true, player, KClientPackets.MESSAGE, ArrayUtils.add(args, 0, localizationCode));
 	}
 
 	/**
-	 * Checks if player has admin permissions.
+	 * Checks whether player has OP.
 	 * 
-	 * @param player player to check
-	 * @return result of checking
+	 * @param player Player to check.
+	 * @return Result of checking.
 	 */
 	public static boolean isOp(EntityPlayerMP player) {
 		return MinecraftServer.getServer().getConfigurationManager().func_152596_g(player.getGameProfile());
@@ -59,15 +71,61 @@ public final class KServerUtils {
 	/**
 	 * Matches player by username except sender's username (if it is player).
 	 * 
-	 * @param sender   instance of sender
-	 * @param username username of player
-	 * @return instance of {@link EntityPlayerMP} or null if it does not found
+	 * @param sender   instance of sender.
+	 * @param username username of player.
+	 * @return{@link EntityPlayerMP}.
 	 */
+	@Nullable
 	public static EntityPlayerMP matchPlayer(ICommandSender sender, String username) {
 		EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, username);
 		return player == null ? MinecraftServer.getServer().getConfigurationManager().func_152612_a(username) : player;
 	}
 
+	/**
+	 * Loads offline player's {@link NBTTagCompound}.
+	 * 
+	 * @param playerName Name of offline player.
+	 * @return {@link NBTTagCompound} with properties.
+	 * 
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	@Nullable
+	public static NBTTagCompound loadOfflinePlayer(final String playerName) throws FileNotFoundException, IOException {
+		NBTTagCompound playerNBT = null;
+		File playerFile = null;
+		SaveHandler saveHandler = (SaveHandler) DimensionManager.getWorld(0).getSaveHandler();
+
+		File playersDirectory = new File(saveHandler.getWorldDirectory(), "playerdata");
+		if ((playerFile = new File(playersDirectory, EntityPlayer.func_146094_a(new GameProfile(null, playerName)).toString() + ".dat")).exists()) {
+			playerNBT = CompressedStreamTools.readCompressed(new FileInputStream(playerFile));
+		}
+
+		return playerNBT;
+	}
+
+	/**
+	 * Saves offline player's {@link NBTTagCompound}.
+	 * 
+	 * @param playerName Name of offline player.
+	 * @param playerNBT  {@link NBTTagCompound} to save.
+	 * @return Whether is successfully completed.
+	 * 
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	public static boolean saveOfflinePlayer(final String playerName, final NBTTagCompound playerNBT) throws FileNotFoundException, IOException {
+		File playerFile = null;
+		SaveHandler saveHandler = (SaveHandler) DimensionManager.getWorld(0).getSaveHandler();
+		File playersDirectory = new File(saveHandler.getWorldDirectory(), "playerdata");
+		if ((playerFile = new File(playersDirectory, EntityPlayer.func_146094_a(new GameProfile(null, playerName)).toString() + ".dat")).exists()) {
+			CompressedStreamTools.writeCompressed(playerNBT, new FileOutputStream(playerFile));
+			return true;
+		}
+		return false;
+	}
+
+	@Nullable
 	public static MovingObjectPosition getMovingObjectPositionFromPlayer(World world, EntityPlayer player, boolean checkLiquids) {
 		float f = 1.0F;
 		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;

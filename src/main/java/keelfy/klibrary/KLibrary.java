@@ -6,7 +6,6 @@ import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.*;
 import keelfy.klibrary.common.*;
 import keelfy.klibrary.network.KNetwork;
-import keelfy.klibrary.server.commands.KCommandManager;
 
 /**
  * @author keelfy
@@ -21,16 +20,9 @@ public final class KLibrary {
 	public static final String MOD_NAME = "KLibrary";
 	public static final String MOD_VERSION = "@VERSIOM@";
 
-	private static Logger logger;
+	private static Logger logger = LogManager.getLogger(MOD_NAME);
 	private static KNetwork network;
-	private static KCommandManager commandManager;
-	private static KConfig config;
-
-	static {
-		logger = LogManager.getLogger(MOD_NAME);
-		commandManager = new KCommandManager();
-		config = new KConfig();
-	}
+	private static KConfig config = new KConfig();
 
 	@Mod.EventHandler
 	public void preInit(final FMLPreInitializationEvent event) {
@@ -59,9 +51,5 @@ public final class KLibrary {
 
 	public static KConfig getConfig() {
 		return config;
-	}
-
-	public static KCommandManager getCommandManager() {
-		return commandManager;
 	}
 }

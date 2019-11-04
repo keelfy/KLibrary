@@ -68,6 +68,15 @@ public abstract class KPacketReceiver {
 				case TAG:
 					this.receivedMarkedTypes[i] = ByteBufUtils.readTag(buffer);
 					break;
+				case BYTE:
+					this.receivedMarkedTypes[i] = buffer.readByte();
+					break;
+				case CHAR:
+					this.receivedMarkedTypes[i] = buffer.readChar();
+					break;
+				case SHORT:
+					this.receivedMarkedTypes[i] = buffer.readShort();
+					break;
 				}
 			}
 		}

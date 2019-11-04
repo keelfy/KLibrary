@@ -47,6 +47,12 @@ minecraft {
 task devJar(type: Jar, overwrite: true) {
     from sourceSets.main.output
     classifier = 'dev'
+    
+    manifest {
+        attributes 'FMLAT': 'klibrary_at.cfg'
+        attributes 'FMLCorePlugin': 'keelfy.klibrary.asm.KHookLoader'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
+    }
 }
 
 tasks.build.dependsOn devJar

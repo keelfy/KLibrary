@@ -1,6 +1,5 @@
 package keelfy.klibrary.server.test;
 
-import keelfy.klibrary.KLibrary;
 import keelfy.klibrary.server.KServerUtils;
 import keelfy.klibrary.server.commands.*;
 import keelfy.klibrary.server.commands.KCommandCompletions.Completion;
@@ -15,7 +14,7 @@ public enum KTestCommands {
 	INSTANCE;
 
 	public static void register(MinecraftServer server) {
-		KLibrary.getCommandManager().registerContainer(INSTANCE);
+//		KLibrary.getCommandManager().registerContainer(INSTANCE);
 	}
 
 	@KCommand(aliases = { "test", "test1" }, desc = "Test of klibrary", canUseFromConsole = true)
