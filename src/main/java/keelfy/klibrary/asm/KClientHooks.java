@@ -2,7 +2,7 @@ package keelfy.klibrary.asm;
 
 import cpw.mods.fml.relauncher.*;
 import gloomyfolken.hooklib.asm.*;
-import keelfy.klibrary.events.client.render.RenderShadowAndFireEvent;
+import keelfy.klibrary.events.client.RenderShadowAndFireEvent;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
@@ -11,6 +11,12 @@ import net.minecraftforge.common.MinecraftForge;
  * @author keelfy
  */
 public final class KClientHooks {
+
+//	@SideOnly(Side.CLIENT)
+//	@Hook(returnCondition = ReturnCondition.ON_TRUE)
+//	public static boolean renderParticles(EffectRenderer renderer, Entity entity, float partialTicks) {
+//		return true;
+//	}
 
 	/**
 	 * Calling {@link RenderShadowAndFireEvent.Pre}.

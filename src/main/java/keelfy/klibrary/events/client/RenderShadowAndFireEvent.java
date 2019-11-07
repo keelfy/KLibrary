@@ -1,4 +1,4 @@
-package keelfy.klibrary.events.client.render;
+package keelfy.klibrary.events.client;
 
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import keelfy.klibrary.events.entity.KEntityEvent;

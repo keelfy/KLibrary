@@ -29,8 +29,8 @@ public class EntityInteractBlockEvent extends KEntityEvent {
 	}
 
 	public static enum InteractType {
-		LEFT_CLICK,
-		RIGHT_CLICK,
+		BREAK,
+		USE,
 		PHYSICAL;
 	}
 }

@@ -7,17 +7,17 @@ import keelfy.klibrary.utils.KBlock;
  * @author keelfy
  */
 @Cancelable
-public class LiquidFlowEvent extends KBlockEvent {
+public class BlockFromToEvent extends KBlockEvent {
 
-	private KBlock blocksTo;
+	private final KBlock blockTo;
 
-	public LiquidFlowEvent(KBlock liquid, KBlock blocksTo) {
-		super(liquid);
+	public BlockFromToEvent(KBlock blockFrom, KBlock blockTo) {
+		super(blockFrom);
 
-		this.blocksTo = blocksTo;
+		this.blockTo = blockTo;
 	}
 
 	public KBlock getBlockTo() {
-		return blocksTo;
+		return blockTo;
 	}
 }
