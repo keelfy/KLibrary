@@ -18,25 +18,25 @@ public interface HookLogger {
 
 		@Override
 		public void debug(String message) {
-			if (KLibrary.getConfig().debug)
+			if (KLibrary.getConfig().DEBUG)
 				System.out.println("[DEBUG] " + message);
 		}
 
 		@Override
 		public void warning(String message) {
-			if (KLibrary.getConfig().debug)
+			if (KLibrary.getConfig().DEBUG)
 				System.out.println("[WARNING] " + message);
 		}
 
 		@Override
 		public void severe(String message) {
-			if (KLibrary.getConfig().debug)
+			if (KLibrary.getConfig().DEBUG)
 				System.out.println("[SEVERE] " + message);
 		}
 
 		@Override
 		public void severe(String message, Throwable cause) {
-			if (KLibrary.getConfig().debug) {
+			if (KLibrary.getConfig().DEBUG) {
 				severe(message);
 				cause.printStackTrace();
 			}
@@ -53,25 +53,25 @@ public interface HookLogger {
 
 		@Override
 		public void debug(String message) {
-			if (KLibrary.getConfig().debug)
+			if (KLibrary.getConfig().DEBUG)
 				logger.fine(message);
 		}
 
 		@Override
 		public void warning(String message) {
-			if (KLibrary.getConfig().debug)
+			if (KLibrary.getConfig().DEBUG)
 				logger.warning(message);
 		}
 
 		@Override
 		public void severe(String message) {
-			if (KLibrary.getConfig().debug)
+			if (KLibrary.getConfig().DEBUG)
 				logger.severe(message);
 		}
 
 		@Override
 		public void severe(String message, Throwable cause) {
-			if (KLibrary.getConfig().debug)
+			if (KLibrary.getConfig().DEBUG)
 				logger.log(Level.SEVERE, message, cause);
 		}
 	}

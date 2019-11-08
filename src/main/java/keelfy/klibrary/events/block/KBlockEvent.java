@@ -26,7 +26,7 @@ public class KBlockEvent extends Event {
 		}
 	}
 
-	@HasResult
+	@Cancelable
 	public static class PushTest extends KBlockEvent {
 
 		public PushTest(KBlock block) {
