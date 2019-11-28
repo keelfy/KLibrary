@@ -1,8 +1,9 @@
 package keelfy.klibrary.server;
 
 import java.io.*;
+import java.util.Set;
 
-import javax.annotation.Nullable;
+import javax.annotation.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -12,11 +13,13 @@ import keelfy.klibrary.KLibrary;
 import keelfy.klibrary.client.*;
 import keelfy.klibrary.network.EnumDataType;
 import net.minecraft.command.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.*;
 import net.minecraft.nbt.*;
+import net.minecraft.network.play.server.S40PacketDisconnect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.common.DimensionManager;
 
@@ -123,6 +126,45 @@ public final class KServerUtils {
 			return true;
 		}
 		return false;
+	}
+
+	public static void broadcast(final IChatComponent component) {
+		MinecraftServer.getServer().addChatMessage(component);
+
+		for (Object target : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+			((ICommandSender) target).addChatMessage(component);
+		}
+	}
+
+	public static void broadcast(final String message) {
+		broadcast(new ChatComponentText(message));
+	}
+
+	public static void broadcastLocalized(final String defaultMessage, final String localizationCode, final Object... args) {
+		MinecraftServer.getServer().addChatMessage(new ChatComponentText(defaultMessage));
+		KLibrary.getNetwork().sendToAll(true, KClientPackets.MESSAGE, ArrayUtils.add(args, 0, localizationCode));
+	}
+
+	/**
+	 * Get all players tracking the given Entity. The Entity must be part of the
+	 * World that this Tracker belongs to.
+	 * 
+	 * @param entity the Entity
+	 * @return all players tracking the Entity
+	 */
+	public static Set<EntityPlayer> getPlayersTrackingEntity(Entity entity) {
+		return ((WorldServer) entity.worldObj).getEntityTracker().getTrackingPlayers(entity);
+	}
+
+	/**
+	 * Kicks player with {@link IChatComponent} message.
+	 * 
+	 * @param player    the Player
+	 * @param component the Message
+	 */
+	public static void kick(@Nonnull EntityPlayerMP player, @Nonnull IChatComponent component) {
+		player.playerNetServerHandler.netManager.scheduleOutboundPacket(new S40PacketDisconnect(component));
+		player.playerNetServerHandler.netManager.closeChannel(component);
 	}
 
 	@Nullable
