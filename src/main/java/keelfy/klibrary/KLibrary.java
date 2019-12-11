@@ -6,6 +6,7 @@ import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.*;
 import keelfy.klibrary.common.*;
 import keelfy.klibrary.network.KNetwork;
+import keelfy.klibrary.utils.ChatTime;
 
 /**
  * @author keelfy
@@ -29,6 +30,9 @@ public final class KLibrary {
 		network = new KNetwork(MOD_ID);
 
 		proxy.preInit(event);
+
+		ChatTime chatTime = ChatTime.parse("1s/1m");
+		logger.info(chatTime.getPeriod());
 	}
 
 	@Mod.EventHandler
