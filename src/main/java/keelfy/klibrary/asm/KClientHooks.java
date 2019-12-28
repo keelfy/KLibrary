@@ -18,7 +18,7 @@ public final class KClientHooks {
 //		return true;
 //	}
 
-	/**
+	/*
 	 * Calling {@link RenderShadowAndFireEvent.Pre}.
 	 */
 	@SideOnly(Side.CLIENT)
@@ -27,7 +27,7 @@ public final class KClientHooks {
 		return MinecraftForge.EVENT_BUS.post(new RenderShadowAndFireEvent.Pre(render, entity));
 	}
 
-	/**
+	/*
 	 * Calling {@link RenderShadowAndFireEvent.Post}.
 	 */
 	@SideOnly(Side.CLIENT)

@@ -6,8 +6,6 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * Contains all supported data types to sent in type-marked mode.
  * 
- * @see {@link KNetwork} to find out sending code.
- * 
  * @author keelfy
  */
 public enum EnumDataType {

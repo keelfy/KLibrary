@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 /**
  * @author keelfy
- * @date 5 июн. 2019 г.
  */
 public class KCommandUsageException extends KCommandException {
 

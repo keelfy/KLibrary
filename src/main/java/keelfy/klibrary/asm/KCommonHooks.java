@@ -23,7 +23,7 @@ import net.minecraftforge.common.MinecraftForge;
  */
 public final class KCommonHooks {
 
-	/**
+	/*
 	 * Calling {@link EntityInteractBlockEvent} from {@link EntityAIBreakDoor}.
 	 */
 	@Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS)
@@ -31,7 +31,7 @@ public final class KCommonHooks {
 		return shouldExecute ? !MinecraftForge.EVENT_BUS.post(new EntityInteractBlockEvent(new KBlock(ai.theEntity.worldObj, ai.entityPosX, ai.entityPosY, ai.entityPosZ), ai.theEntity, InteractType.BREAK)) : false;
 	}
 
-	/**
+	/*
 	 * Calling {@link BlockFromToEvent} from {@link BlockFalling}.
 	 */
 	@Hook(returnCondition = ReturnCondition.ON_TRUE)
@@ -41,7 +41,7 @@ public final class KCommonHooks {
 		return y >= 0 && MinecraftForge.EVENT_BUS.post(new BlockFromToEvent(blockFrom, blockTo));
 	}
 
-	/**
+	/*
 	 * Calling {@link PlayerEditCheckEvent} from {@link EntityPlayer}.
 	 */
 	@Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS)
@@ -49,7 +49,7 @@ public final class KCommonHooks {
 		return allowEdit ? !MinecraftForge.EVENT_BUS.post(new PlayerEditCheckEvent(player, x, y, z, sideOfHit, itemStack)) : false;
 	}
 
-	/**
+	/*
 	 * Calling {@link PlayerMineCheckEvent} from {@link World}.
 	 */
 	@Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS)
@@ -57,7 +57,7 @@ public final class KCommonHooks {
 		return allowMine ? !MinecraftForge.EVENT_BUS.post(new PlayerMineCheckEvent(player, x, y, z)) : false;
 	}
 
-	/**
+	/*
 	 * Calling {@link BlockFromToEvent} from {@link EntityFallingBlock}.
 	 */
 	@Hook(returnCondition = ReturnCondition.ON_TRUE)
@@ -79,7 +79,7 @@ public final class KCommonHooks {
 		return false;
 	}
 
-	/**
+	/*
 	 * Calling {@link EntityInteractBlockEvent} from {@link BlockFarmland}.
 	 */
 	@Hook(returnCondition = ReturnCondition.ON_TRUE)
@@ -87,7 +87,7 @@ public final class KCommonHooks {
 		return MinecraftForge.EVENT_BUS.post(new EntityInteractBlockEvent(new KBlock(world, x, y, z), entity, InteractType.PHYSICAL));
 	}
 
-	/**
+	/*
 	 * Calling {@link EntityInteractBlockEvent} from {@link BlockTripWire}.
 	 */
 	@Hook(returnCondition = ReturnCondition.ON_TRUE)
@@ -95,7 +95,7 @@ public final class KCommonHooks {
 		return MinecraftForge.EVENT_BUS.post(new EntityInteractBlockEvent(new KBlock(world, x, y, z, block), entity, InteractType.PHYSICAL));
 	}
 
-	/**
+	/*
 	 * Calling {@link EntityInteractBlockEvent} from {@link BlockBasePressurePlate}.
 	 */
 	@Hook(returnCondition = ReturnCondition.ON_TRUE)
@@ -103,7 +103,7 @@ public final class KCommonHooks {
 		return MinecraftForge.EVENT_BUS.post(new EntityInteractBlockEvent(new KBlock(world, x, y, z, block), entity, InteractType.PHYSICAL));
 	}
 
-	/**
+	/*
 	 * Calling {@link BlockBurnEvent} from {@link BlockFire}.
 	 */
 	@Hook(returnCondition = ReturnCondition.ON_TRUE)
@@ -115,7 +115,7 @@ public final class KCommonHooks {
 		return result;
 	}
 
-	/**
+	/*
 	 * Calling {@link BlockIgniteEvent}.
 	 */
 	@Hook(returnCondition = ReturnCondition.ON_TRUE)

@@ -6,7 +6,6 @@ import net.minecraft.server.MinecraftServer;
 
 /**
  * @author keelfy
- * @date 13 мая 2019 г.
  */
 public class KCommandTabCompleter {
 

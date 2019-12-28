@@ -514,7 +514,6 @@ public class KVector2D {
 	 * @param translateX what to add after rotation
 	 * @param translateZ what to add after rotation
 	 * @return a new vector
-	 * @see AffineTransform another method to transform vectors
 	 */
 	public KVector2D transform2D(double angle, double aboutX, double aboutZ, double translateX, double translateZ) {
 		angle = Math.toRadians(angle);

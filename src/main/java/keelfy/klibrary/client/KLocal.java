@@ -16,7 +16,7 @@ import net.minecraft.util.ChatComponentText;
 public final class KLocal {
 
 	/**
-	 * Gets localized string and format '&' symbols to color codes.
+	 * Gets localized string and format with color codes.
 	 * 
 	 * @param localizationCode localization string code {@link I18n#format}
 	 * @param objects          variables used in message
@@ -29,8 +29,6 @@ public final class KLocal {
 	/**
 	 * Sends message to player by localization code.
 	 * 
-	 * @see {@link KLocal#format}
-	 * 
 	 * @param player           recipient
 	 * @param localizationCode localization string code {@link I18n#format}
 	 * @param objects          variables used in message
@@ -39,7 +37,7 @@ public final class KLocal {
 		Iterator<String> text = Arrays.asList(format(localizationCode, objects).split("@nl@")).iterator();
 		while (text.hasNext()) {
 			String line = text.next();
-			
+
 			player.addChatMessage(new ChatComponentText(line));
 		}
 	}

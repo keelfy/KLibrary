@@ -1,8 +1,8 @@
 package keelfy.klibrary.server.test;
 
-import keelfy.klibrary.server.KServerUtils;
 import keelfy.klibrary.server.commands.*;
 import keelfy.klibrary.server.commands.KCommandCompletions.Completion;
+import keelfy.klibrary.utils.KPlayerUtils;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -21,12 +21,10 @@ public enum KTestCommands {
 	@KCommandCompletions({ @Completion(num = 0, variants = { "<player>" }), @Completion(num = 2, variants = { "gui", "gui12" }) })
 	@KChildCommands({ KTestSubCmds.class })
 	public void test(KCommandArguments args, ICommandSender sender) {
-		EntityPlayerMP player = KServerUtils.checkPlayer(sender);
-
-		if (player == null)
+		if (!(sender instanceof EntityPlayerMP))
 			return;
 
-		KServerUtils.sendLocalizedMessage(player, "test.message", "str1", 1, 1.4F);
+		KPlayerUtils.sendLocalizedMessage((EntityPlayerMP) sender, "test.message", "str1", 1, 1.4F);
 	}
 
 }

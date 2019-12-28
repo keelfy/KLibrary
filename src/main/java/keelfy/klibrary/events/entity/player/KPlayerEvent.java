@@ -5,7 +5,6 @@ import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * @author keelfy
- * @date 7 июн. 2019 г.
  */
 public class KPlayerEvent extends Event {
 

@@ -7,38 +7,18 @@ package keelfy.klibrary.utils;
  */
 public class KBlockVector2D extends KVector2D {
 
-	/**
-	 * Construct the Vector object.
-	 *
-	 * @param pt
-	 */
 	public KBlockVector2D(KVector2D pt) {
 		super(pt);
 	}
 
-	/**
-	 * Construct the Vector object.
-	 *
-	 * @param pt
-	 */
 	public KBlockVector2D(int x, int z) {
 		super(x, z);
 	}
 
-	/**
-	 * Construct the Vector object.
-	 *
-	 * @param pt
-	 */
 	public KBlockVector2D(float x, float z) {
 		super(x, z);
 	}
 
-	/**
-	 * Construct the Vector object.
-	 *
-	 * @param pt
-	 */
 	public KBlockVector2D(double x, double z) {
 		super(x, z);
 	}

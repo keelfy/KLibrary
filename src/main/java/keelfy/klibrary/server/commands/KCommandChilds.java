@@ -5,7 +5,6 @@ import java.util.*;
 
 /**
  * @author keelfy
- * @date 26 мая 2019 г.
  */
 public class KCommandChilds {
 

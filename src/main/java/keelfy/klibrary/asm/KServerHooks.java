@@ -14,7 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
  */
 public final class KServerHooks {
 
-	/**
+	/*
 	 * Calling {@link PlayerGameModeChangeEvent} from {@link EntityPlayerMP}.
 	 */
 	@Hook(returnCondition = ReturnCondition.ON_TRUE)
@@ -22,7 +22,7 @@ public final class KServerHooks {
 		return player.theItemInWorldManager.getGameType() != newGameType ? MinecraftForge.EVENT_BUS.post(new PlayerGameModeChangeEvent(player, player.theItemInWorldManager.getGameType(), newGameType)) : false;
 	}
 
-	/**
+	/*
 	 * Calling {@link KBlockEvent.PushTest}.
 	 */
 	@Hook(injectOnExit = true, returnCondition = ReturnCondition.ALWAYS)

@@ -55,7 +55,12 @@ task devJar(type: Jar, overwrite: true) {
     }
 }
 
-tasks.build.dependsOn devJar
+task javadocJar(type: Jar, overwrite: true, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+tasks.build.dependsOn devJar, javadocJar
 
 processResources
 {

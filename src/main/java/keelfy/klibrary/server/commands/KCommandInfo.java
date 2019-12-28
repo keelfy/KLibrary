@@ -8,7 +8,6 @@ import com.google.common.collect.Lists;
 
 /**
  * @author keelfy
- * @date 13 мая 2019 г.
  */
 public class KCommandInfo {
 

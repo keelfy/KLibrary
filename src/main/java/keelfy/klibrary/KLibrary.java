@@ -6,7 +6,6 @@ import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.*;
 import keelfy.klibrary.common.*;
 import keelfy.klibrary.network.KNetwork;
-import keelfy.klibrary.utils.ChatTime;
 
 /**
  * @author keelfy
@@ -21,18 +20,14 @@ public final class KLibrary {
 	public static final String MOD_NAME = "KLibrary";
 	public static final String MOD_VERSION = "@VERSIOM@";
 
-	private static Logger logger = LogManager.getLogger(MOD_NAME);
+	private static Logger logger = LogManager.getLogger(KLibrary.class.getSimpleName());
 	private static KNetwork network;
 	private static KConfig config = new KConfig();
 
 	@Mod.EventHandler
 	public void preInit(final FMLPreInitializationEvent event) {
 		network = new KNetwork(MOD_ID);
-
 		proxy.preInit(event);
-
-		ChatTime chatTime = ChatTime.parse("1s/1m");
-		logger.info(chatTime.getPeriod());
 	}
 
 	@Mod.EventHandler

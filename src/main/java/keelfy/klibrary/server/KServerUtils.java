@@ -1,27 +1,20 @@
 package keelfy.klibrary.server;
 
 import java.io.*;
-import java.util.Set;
 
 import javax.annotation.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.mojang.authlib.GameProfile;
-
 import keelfy.klibrary.KLibrary;
-import keelfy.klibrary.client.*;
+import keelfy.klibrary.client.KClientPackets;
 import keelfy.klibrary.network.EnumDataType;
+import keelfy.klibrary.utils.KPlayerUtils;
 import net.minecraft.command.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.*;
-import net.minecraft.nbt.*;
-import net.minecraft.network.play.server.S40PacketDisconnect;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.minecraft.world.storage.SaveHandler;
-import net.minecraftforge.common.DimensionManager;
 
 /**
  * Diffirent server utilities.
@@ -31,44 +24,33 @@ import net.minecraftforge.common.DimensionManager;
 public final class KServerUtils {
 
 	/**
-	 * Checks {@link ICommandSender} is instance of {@link EntityPlayerMP}.
-	 * 
-	 * @param sender Sender to check.
-	 * @deprecated Will be removed because of useless.
-	 * @return player instance or null if it is not a player
-	 */
-	@Deprecated
-	@Nullable
-	public static EntityPlayerMP checkPlayer(ICommandSender sender) {
-		if (sender instanceof EntityPlayerMP) {
-			return (EntityPlayerMP) sender;
-		}
-		return null;
-	}
-
-	/**
 	 * Sends packet to player with message that will be added to chat on client in
 	 * localized and formatted form.
 	 * 
-	 * @see {@link KClientPacketHandler} to find out receiving proccess.
+	 * @deprecated Use
+	 *             {@link KPlayerUtils#sendLocalizedMessage(EntityPlayerMP, String, Object...)}
 	 * 
 	 * @param player           Recipient
 	 * @param localizationCode Code that I18n will use to get message
 	 * @param args             Variables used in message. See {@link EnumDataType}
 	 *                         to find out supported data types.
 	 */
+	@Deprecated
 	public static void sendLocalizedMessage(EntityPlayerMP player, String localizationCode, Object... args) {
-		KLibrary.getNetwork().sendTo(true, player, KClientPackets.MESSAGE, ArrayUtils.add(args, 0, localizationCode));
+		KPlayerUtils.sendLocalizedMessage(player, localizationCode, args);
 	}
 
 	/**
 	 * Checks whether player has OP.
 	 * 
+	 * @deprecated Use {@link KPlayerUtils#isOp(EntityPlayerMP)}
+	 * 
 	 * @param player Player to check.
 	 * @return Result of checking.
 	 */
+	@Deprecated
 	public static boolean isOp(EntityPlayerMP player) {
-		return MinecraftServer.getServer().getConfigurationManager().func_152596_g(player.getGameProfile());
+		return KPlayerUtils.isOp(player);
 	}
 
 	/**
@@ -87,28 +69,25 @@ public final class KServerUtils {
 	/**
 	 * Loads offline player's {@link NBTTagCompound}.
 	 * 
+	 * @deprecated Use {@link KPlayerUtils#loadOfflinePlayer(String)}
+	 * 
 	 * @param playerName Name of offline player.
 	 * @return {@link NBTTagCompound} with properties.
 	 * 
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
+	@Deprecated
 	@Nullable
 	public static NBTTagCompound loadOfflinePlayer(final String playerName) throws FileNotFoundException, IOException {
-		NBTTagCompound playerNBT = null;
-		File playerFile = null;
-		SaveHandler saveHandler = (SaveHandler) DimensionManager.getWorld(0).getSaveHandler();
-
-		File playersDirectory = new File(saveHandler.getWorldDirectory(), "playerdata");
-		if ((playerFile = new File(playersDirectory, EntityPlayer.func_146094_a(new GameProfile(null, playerName)).toString() + ".dat")).exists()) {
-			playerNBT = CompressedStreamTools.readCompressed(new FileInputStream(playerFile));
-		}
-
-		return playerNBT;
+		return KPlayerUtils.loadOfflinePlayer(playerName);
 	}
 
 	/**
 	 * Saves offline player's {@link NBTTagCompound}.
+	 * 
+	 * @deprecated User
+	 *             {@link KPlayerUtils#saveOfflinePlayer(String, NBTTagCompound)}
 	 * 
 	 * @param playerName Name of offline player.
 	 * @param playerNBT  {@link NBTTagCompound} to save.
@@ -117,76 +96,57 @@ public final class KServerUtils {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
+	@Deprecated
 	public static boolean saveOfflinePlayer(final String playerName, final NBTTagCompound playerNBT) throws FileNotFoundException, IOException {
-		File playerFile = null;
-		SaveHandler saveHandler = (SaveHandler) DimensionManager.getWorld(0).getSaveHandler();
-		File playersDirectory = new File(saveHandler.getWorldDirectory(), "playerdata");
-		if ((playerFile = new File(playersDirectory, EntityPlayer.func_146094_a(new GameProfile(null, playerName)).toString() + ".dat")).exists()) {
-			CompressedStreamTools.writeCompressed(playerNBT, new FileOutputStream(playerFile));
-			return true;
-		}
-		return false;
+		return KPlayerUtils.saveOfflinePlayer(playerName, playerNBT);
 	}
 
-	public static void broadcast(final IChatComponent component) {
-		MinecraftServer.getServer().addChatMessage(component);
+	/**
+	 * Sends message to everybode on the server
+	 * 
+	 * @param message - the message
+	 */
+	public static void broadcast(final IChatComponent message) {
+		MinecraftServer.getServer().addChatMessage(message);
 
 		for (Object target : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
-			((ICommandSender) target).addChatMessage(component);
+			((ICommandSender) target).addChatMessage(message);
 		}
 	}
 
+	/**
+	 * Sends message to everybode on the server
+	 * 
+	 * @param message - the message
+	 */
 	public static void broadcast(final String message) {
 		broadcast(new ChatComponentText(message));
 	}
 
+	/**
+	 * Sends localized message to everybode on the server
+	 * 
+	 * @param defaultMessage   the message that will be send to non-player targets
+	 * @param localizationCode localization code of message that clients will decode
+	 *                         into message
+	 * @param args             arguments for
+	 *                         {@link String#format(String, Object...)}
+	 */
 	public static void broadcastLocalized(final String defaultMessage, final String localizationCode, final Object... args) {
 		MinecraftServer.getServer().addChatMessage(new ChatComponentText(defaultMessage));
 		KLibrary.getNetwork().sendToAll(true, KClientPackets.MESSAGE, ArrayUtils.add(args, 0, localizationCode));
 	}
 
 	/**
-	 * Get all players tracking the given Entity. The Entity must be part of the
-	 * World that this Tracker belongs to.
-	 * 
-	 * @param entity the Entity
-	 * @return all players tracking the Entity
-	 */
-	public static Set<EntityPlayer> getPlayersTrackingEntity(Entity entity) {
-		return ((WorldServer) entity.worldObj).getEntityTracker().getTrackingPlayers(entity);
-	}
-
-	/**
 	 * Kicks player with {@link IChatComponent} message.
+	 * 
+	 * @deprecated Use {@link KPlayerUtils#kick(EntityPlayerMP, IChatComponent)}
 	 * 
 	 * @param player    the Player
 	 * @param component the Message
 	 */
+	@Deprecated
 	public static void kick(@Nonnull EntityPlayerMP player, @Nonnull IChatComponent component) {
-		player.playerNetServerHandler.netManager.scheduleOutboundPacket(new S40PacketDisconnect(component));
-		player.playerNetServerHandler.netManager.closeChannel(component);
-	}
-
-	@Nullable
-	public static MovingObjectPosition getMovingObjectPositionFromPlayer(World world, EntityPlayer player, boolean checkLiquids) {
-		float f = 1.0F;
-		float f1 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
-		float f2 = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
-		double d0 = player.prevPosX + (player.posX - player.prevPosX) * f;
-		double d1 = player.prevPosY + (player.posY - player.prevPosY) * f + (world.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight());
-		double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * f;
-		Vec3 vec3 = Vec3.createVectorHelper(d0, d1, d2);
-		float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
-		float f4 = MathHelper.sin(-f2 * 0.017453292F - (float) Math.PI);
-		float f5 = -MathHelper.cos(-f1 * 0.017453292F);
-		float f6 = MathHelper.sin(-f1 * 0.017453292F);
-		float f7 = f4 * f5;
-		float f8 = f3 * f5;
-		double d3 = 5.0D;
-		if (player instanceof EntityPlayerMP) {
-			d3 = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
-		}
-		Vec3 vec31 = vec3.addVector(f7 * d3, f6 * d3, f8 * d3);
-		return world.func_147447_a(vec3, vec31, checkLiquids, !checkLiquids, false);
+		KPlayerUtils.kick(player, component);
 	}
 }

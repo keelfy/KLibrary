@@ -4,7 +4,6 @@ package keelfy.klibrary.utils;
  * Extension of Vector that supports being compared as ints (for accuracy).
  * 
  * @author sk89q
- * @author keelfy
  */
 public class KBlockVector extends KVector {
 
@@ -12,38 +11,18 @@ public class KBlockVector extends KVector {
 		super();
 	}
 
-	/**
-	 * Construct the Vector object.
-	 *
-	 * @param pt
-	 */
 	public KBlockVector(KVector pt) {
 		super(pt);
 	}
 
-	/**
-	 * Construct the Vector object.
-	 *
-	 * @param pt
-	 */
 	public KBlockVector(int x, int y, int z) {
 		super(x, y, z);
 	}
 
-	/**
-	 * Construct the Vector object.
-	 *
-	 * @param pt
-	 */
 	public KBlockVector(float x, float y, float z) {
 		super(x, y, z);
 	}
 
-	/**
-	 * Construct the Vector object.
-	 *
-	 * @param pt
-	 */
 	public KBlockVector(double x, double y, double z) {
 		super(x, y, z);
 	}

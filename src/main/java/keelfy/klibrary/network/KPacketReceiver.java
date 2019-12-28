@@ -4,7 +4,6 @@ import cpw.mods.fml.common.network.*;
 import cpw.mods.fml.common.network.FMLNetworkEvent.*;
 import cpw.mods.fml.relauncher.*;
 import io.netty.buffer.ByteBuf;
-import keelfy.klibrary.client.KClientPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,8 +11,6 @@ import net.minecraft.network.NetHandlerPlayServer;
 
 /**
  * This class receives data from {@link ByteBuf} sent from {@link KNetwork}.
- * 
- * @see {@link KNetwork} methods to find out sending proccess.
  * 
  * @author keelfy
  */
@@ -27,8 +24,6 @@ public abstract class KPacketReceiver {
 
 	/**
 	 * Initializes basic variables of receiver.
-	 * 
-	 * @see {@link KClientPacketHandler} for example.
 	 * 
 	 * @param buffer received {@link ByteBuf}.
 	 */
@@ -129,8 +124,6 @@ public abstract class KPacketReceiver {
 
 	/**
 	 * Creates an instance of receiver by {@link ClientCustomPacketEvent}.
-	 * 
-	 * @see {@link KClientPacketHandler} for example.
 	 */
 	@SideOnly(Side.CLIENT)
 	public static class ClientPacketReceiver extends KPacketReceiver {
@@ -179,6 +172,8 @@ public abstract class KPacketReceiver {
 
 		/**
 		 * Creates an instance of receiver by {@link ServerCustomPacketEvent}.
+		 * 
+		 * @param event {@link ServerCustomPacketEvent}
 		 */
 		public ServerPacketReceiver(final FMLNetworkEvent.ServerCustomPacketEvent event) {
 			super(event.packet.payload());

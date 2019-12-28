@@ -4,7 +4,6 @@ import java.lang.annotation.*;
 
 /**
  * @author keelfy
- * @created 6 июл. 2017 г.
  */
 @Target(value = ElementType.METHOD)
 @Retention(value = RetentionPolicy.RUNTIME)

@@ -52,7 +52,6 @@ public class KCommandArguments {
 	 * @param valueFlags       a set containing all value flags (pass null to
 	 *                         disable value flag parsing)
 	 * @param allowHangingFlag true if hanging flags are allowed
-	 * @param locals           the locals, null to create empty one
 	 * @throws CommandException thrown on a parsing error
 	 */
 	public KCommandArguments(String[] args, Set<Character> valueFlags, boolean allowHangingFlag) throws CommandException {

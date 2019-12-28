@@ -42,6 +42,7 @@ public final class KNetwork {
 	 * Registers packet handler of this channel
 	 * 
 	 * @param handler instance of handler
+	 * @return {@link KNetwork}
 	 */
 	public KNetwork registerPacketHandler(Object handler) {
 		channel.register(handler);

@@ -5,7 +5,6 @@ import net.minecraft.entity.Entity;
 
 /**
  * @author keelfy
- * @date 7 июн. 2019 г.
  */
 public class KEntityEvent extends Event {
 
